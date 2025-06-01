@@ -10,7 +10,7 @@ from tensorflow.keras.callbacks import CSVLogger
 from tqdm.keras import TqdmCallback
 
 # Load dataset
-df = pd.read_csv('iris.csv')
+df = pd.read_csv('data/iris.csv')
 
 # Separate features and target
 X = df.drop('species', axis=1)
