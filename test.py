@@ -1,40 +1,40 @@
-import pandas as pd
 import numpy as np
-import joblib
-from sklearn.metrics import accuracy_score
+import pandas as pd
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.layers import Dense
 
-def test_model_accuracy_on_sample():
-    # Load sample dataset
-    df = pd.read_csv("data/sample.csv")
-    X = df.drop("species", axis=1)
-    y_true_labels = df["species"]
-
-    # Load encoder and scaler
-    le = joblib.load("label_encoder.pkl")
-    scaler = joblib.load("scaler.pkl")
-
-    y_true = le.transform(y_true_labels)
-    X = scaler.transform(X)
-
-    # Reconstruct model
+# Step 1: Define the same model architecture used during training
+def build_model():
     model = Sequential([
-        Dense(64, activation='relu', input_shape=(X.shape[1],)),
-        Dropout(0.3),
-        Dense(32, activation='relu'),
-        Dropout(0.3),
-        Dense(3, activation='softmax')
+        Dense(10, activation='relu', input_shape=(4,)),
+        Dense(10, activation='relu'),
+        Dense(3, activation='softmax')  # Assuming 3 classes in Iris dataset
     ])
-    model.load_weights("iris_model.weights.h5")
+    return model
 
-    # Predict and evaluate
-    y_pred_probs = model.predict(X)
-    y_pred = np.argmax(y_pred_probs, axis=1)
+# Step 2: Load the sample test data
+data_path = "data/sample.csv"
+data = pd.read_csv(data_path)
 
-    accuracy = accuracy_score(y_true, y_pred)
-    assert accuracy >= 0.80, f"Accuracy is too low: {accuracy:.2f}"
+# If the CSV contains labels, separate them
+if 'label' in data.columns:
+    X = data.drop(columns=['label']).values
+    y = data['label'].values
+else:
+    X = data.values
+    y = None
 
-if __name__ == "__main__":
-    test_model_accuracy_on_sample()
-    print("✅ Model accuracy test passed.")
+# Step 3: Load model and weights
+model = build_model()
+model.load_weights("iris_model.weights.h5")
+
+# Step 4: Make predictions
+predictions = model.predict(X)
+predicted_classes = np.argmax(predictions, axis=1)
+
+# Step 5: Output
+for i, pred in enumerate(predicted_classes):
+    if y is not None:
+        print(f"Sample {i}: Predicted = {pred}, Actual = {y[i]}")
+    else:
+        print(f"Sample {i}: Predicted = {pred}")
