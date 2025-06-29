@@ -30,27 +30,3 @@ jobs:
       - name: Run unit test
         run: |
           python test.py | tee test_output.txt
-
-      - name: Setup CML
-        uses: iterative/setup-cml@v2
-
-      - name: Create and post CML report (no cloud)
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "# ✅ Unit Test Report" > report.md
-          echo '```' >> report.md
-          cat test_output.txt >> report.md
-          echo '```' >> report.md
-
-          echo "# 📈 Metrics from Training" >> report.md
-          if [ -f metrics.csv ]; then
-            echo '```' >> report.md
-            cat metrics.csv >> report.md
-            echo '```' >> report.md
-          else
-            echo "_metrics.csv not found._" >> report.md
-          fi
-
-          # Create PR comment safely (no runners or clouds involved)
-          cml comment create report.md --pr
