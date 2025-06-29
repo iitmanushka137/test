@@ -33,5 +33,4 @@ def test_model_accuracy_on_sample():
     y_pred = np.argmax(y_pred_probs, axis=1)
 
     accuracy = accuracy_score(y_true, y_pred)
-    print(accuracy)
     assert accuracy >= 0.80, f"Model accuracy {accuracy:.2f} is below expected threshold"
