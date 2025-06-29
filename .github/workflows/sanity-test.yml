@@ -34,11 +34,11 @@ jobs:
       - name: Setup CML
         uses: iterative/setup-cml@v2
 
-      - name: Create and post CML report
+      - name: Create and post CML report (no cloud)
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "# ✅ Unit Test Report (pytest)" > report.md
+          echo "# ✅ Unit Test Report" > report.md
           echo '```' >> report.md
           cat test_output.txt >> report.md
           echo '```' >> report.md
@@ -52,4 +52,5 @@ jobs:
             echo "_metrics.csv not found._" >> report.md
           fi
 
-          cml comment create report.md
+          # Create PR comment safely (no runners or clouds involved)
+          cml comment create report.md --pr
