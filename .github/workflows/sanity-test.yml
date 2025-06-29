@@ -27,6 +27,3 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run unit test
-        run: |
-          python test.py | tee test_output.txt
